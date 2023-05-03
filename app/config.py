@@ -1,30 +1,39 @@
-from flask_socketio import emit, leave_room, join_room
+from flask_socketio import emit, leave_room, join_room, rooms
 from . import socketio
+from flask import render_template, Blueprint, request
 
-@socketio.on('connect', namespace='/config')
-def handle_connect():
-    print('A user has connected')
+config = Blueprint('config', __name__)
+clients = {}
 
-@socketio.on('disconnect', namespace='/config')
+
+@config.route('/')
+def index():
+    return render_template('config.html')
+
+
+@socketio.on('connection')
+def handle_connect(id):
+    clients[request.sid] = id
+    matching_client_sid = next((client_sid for client_sid, client_id in clients.items(
+    ) if client_id == id and client_sid != request.sid), None)
+    if matching_client_sid:
+        room_name = id
+        join_room(room_name, sid=request.sid)
+        join_room(room_name, sid=matching_client_sid)
+        emit("joined", room=room_name)
+        print(
+            f'Clients with sid {request.sid} & {matching_client_sid} joined room {room_name}')
+    print(clients)
+
+
+@socketio.on('disconnect')
 def handle_disconnect():
     print('A user has disconnected')
     id = request.sid
     if id in clients:
         del clients[id]
 
-@socketio.on('join', namespace='/config')
-def handle_join(data):
-    print('A user has joined')
-    id = data['id']
-    clients[request.sid] = id
 
-    # Find other clients with the same ID
-    matching_clients = [client_id for client_id, client in clients.items() if client == id and client_id != request.sid]
-
-    # If there is a matching client, join them both to a room with the ID as the room name
-    if len(matching_clients) > 0:
-        room_name = id
-        join_room(room_name, namespace='/config')
-        for client_id in matching_clients:
-            join_room(room_name, sid=client_id, namespace='/config')
-        print(f'Clients with ID {room_name} joined room {room_name}')
+@socketio.on('current config')
+def handle_current_config(json):
+    emit('current config', json, to=rooms()[1])
