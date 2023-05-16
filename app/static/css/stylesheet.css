@@ -1,0 +1,68 @@
+.config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2em;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.block-title {
+  font-size: large;
+}
+
+.add {
+  font-size: large;
+}
+
+.submit {
+  color: red;
+  font-size: larger;
+}
+
+.items {
+  display: flex;
+  display: row;
+  gap: 1em;
+}
+
+.item {
+  background-color: gray;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #4e4e4e;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.none {
+  display: none;
+}

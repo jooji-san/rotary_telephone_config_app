@@ -12,12 +12,12 @@ def index():
 
 
 @socketio.on('connection')
-def handle_connect(id):
-    clients[request.sid] = id
-    matching_client_sid = next((client_sid for client_sid, client_id in clients.items(
-    ) if client_id == id and client_sid != request.sid), None)
+def handle_connect(email):
+    clients[request.sid] = email
+    matching_client_sid = next((client_sid for client_sid, client_email in clients.items(
+    ) if client_email == email and client_sid != request.sid), None)
     if matching_client_sid:
-        room_name = id
+        room_name = email
         join_room(room_name, sid=request.sid)
         join_room(room_name, sid=matching_client_sid)
         emit("joined", room=room_name)
@@ -29,11 +29,20 @@ def handle_connect(id):
 @socketio.on('disconnect')
 def handle_disconnect():
     print('A user has disconnected')
-    id = request.sid
-    if id in clients:
-        del clients[id]
+    del clients[request.sid]
+    print(clients)
 
 
 @socketio.on('current config')
-def handle_current_config(json):
-    emit('current config', json, to=rooms()[1])
+def handle_current_config(json, email):
+    emit('current config', json, to=email)
+
+
+@socketio.on('updated config')
+def handle_updated_config(json, email):
+    emit('updated config', json, to=email)
+
+
+@socketio.on('successful update')
+def handle_successful_update(email):
+    emit('successful update', to=email)

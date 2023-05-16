@@ -1,8 +1,35 @@
 {% extends "base.html" %} {% block content %}
-<p>{{field1}}</p>
-<p>{{field2}}</p>
+<div class="config">
+  <h3 id="email">{{email}}</h3>
+
+  <div class="block">
+    <div class="block-title">Wifi Networks</div>
+    <div class="items wifi"></div>
+    <button class="add">Add Wifi</button>
+  </div>
+  <div class="block">
+    <div class="block-title">Messenger Credentials</div>
+    <div class="items messenger"></div>
+    <button class="add">Add Messenger Login</button>
+  </div>
+  <div class="block">
+    <div class="block-title">Contacts</div>
+    <div class="items contact"></div>
+    <button class="add">Add Contact</button>
+  </div>
+  <button class="submit">submit</button>
+</div>
+
 <script
-src="{{ url_for('static', filename='js/script.js') }}"
-type="module"
+  src="{{ url_for('static', filename='js/script.js') }}"
+  type="module"
 ></script>
+
+<div class="modal none">
+  <div class="modal-title"></div>
+  <input type="text" class="modal-first" />
+  <input type="password" class="modal-second" />
+  <button>add</button>
+</div>
+
 {% endblock %}
